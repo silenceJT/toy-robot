@@ -11,6 +11,7 @@ class Robot
 		puts @positionX.to_s + "," + @positionY.to_s + "," + @facing
 	end
 
+
 	def move
 		case @facing
 		when "NORTH"

@@ -5,7 +5,7 @@ def start
 	puts "Input from file or console? (f/c):"
 	inputFC = gets.chomp
 	if inputFC == "c"
-		puts "Please set the table size"
+		puts "Please set the table size, for exampe: 5,5"
 		inputSize = gets.chomp.split("\,")
 		@table = Table.new(inputSize[0], inputSize[1])
 		input = gets.chomp
@@ -19,10 +19,10 @@ def start
 				if validPosition?(x, y, f)
 					@robot = Robot.new(x, y, f)
 				else
-					puts "invalid position"
+					puts "invalid position, place again."
 				end
 			elsif input.start_with?("MOVE")
-				if safePosition?(@robot.positionX, @robot.positionY, @robot.facing)
+				if safeMove?(@robot.positionX, @robot.positionY, @robot.facing)
 					@robot.move
 				end
 			elsif input.start_with?("LEFT")
@@ -47,20 +47,20 @@ def start
 				if validPosition?(x, y, f)
 					@robot = Robot.new(x, y, f)
 				else
-					puts "invalid position"
+					puts "invalid position, place again."
 				end
-				@robot.report
+				#@robot.report
 			elsif input.start_with?("MOVE")
-				if safePosition?(@robot.positionX, @robot.positionY, @robot.facing)
+				if safeMove?(@robot.positionX, @robot.positionY, @robot.facing)
 					@robot.move
-					@robot.report
+					#@robot.report
 				end
 			elsif input.start_with?("LEFT")
 				@robot.left
-				@robot.report
+				#@robot.report
 			elsif input.start_with?("RIGHT")
 				@robot.right
-				@robot.report
+				#@robot.report
 			elsif input.start_with?("REPORT")
 				@robot.report
 			else
@@ -82,87 +82,22 @@ def validPosition?(x, y, f)
 end
 
 
-def safePosition?(x, y, f)
-	# left col
-	if x == 0
-		case f
-		when "WEST"
-			return false
-		when "NORTH"
-			if y == @table.row
-				return false
-			else 
-				return true
-			end
-		when "SOUTH"
-			if y == 0
-				return false
-			else 
-				return true
-			end
-		else
-			return true
-		end
-	# right col
-	elsif x == @table.col
-		case f
-		when "EAST"
-			return false
-		when "NORTH"
-			if y == @table.row
-				return false
-			else 
-				return true
-			end
-		when "SOUTH"
-			if y == 0
-				return false
-			else 
-				return true
-			end
-		else
-			return true
-		end
-	# bottom row
-	elsif y == 0
-		case f
-		when "SOUTH"
-			return false
-		when "WEST"
-			if x == 0
-				return false
-			else
-				return true
-			end
-		when "EAST"
-			if x == @table.col
-				return false
-			else
-				return true
-			end
-		else
-			return true
-		end
-	# top row	
-	elsif y == @table.row
-		case f
-		when "NORTH"
-			return false
-		when "WEST"
-			if x == 0
-				return false
-			else
-				return true
-			end
-		when "EAST"
-			if x == @table.col
-				return false
-			else
-				return true
-			end
-		else
-			return true
-		end
+def safeMove?(x, y, f)
+	case f
+	when "NORTH"
+		y += 1
+	when "SOUTH"
+		y -= 1
+	when "WEST"
+		x -= 1
+	else
+		x += 1
+	end
+
+	if x < 0 || x > @table.col || y < 0 || y > @table.row
+		return false
+	else
+		return true
 	end
 end
 
